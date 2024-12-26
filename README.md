@@ -7,6 +7,7 @@ A simple Python implementation of the **AC-3 algorithm** for map coloring. This 
 - **Add Variables:** Define regions (variables) and their set of possible colors (domains).
 - **Add Edges:** Specify adjacency constraints (edges) between regions.
 - **AC-3 Algorithm:** Propagate constraints to ensure the assignment of variables remains consistent.
+- **Solving:** Solve the map coloring CSP with backtracking
 
 ### Getting Started
 Clone or download this repository.
@@ -44,7 +45,8 @@ csp.add_edge("Q", "NSW")
 csp.add_edge("NSW", "V")
 
 # Run the AC-3 algorithm to check for arc consistency
-result = csp.ac3()
-print("\nArc consistency result:", result)
-print("Remaining domains:", csp.domains)
+is_arc_consistent = csp.ac3()
+
+# Solve the CSP and get a valid assignment
+assignment = csp.solve()
 ```

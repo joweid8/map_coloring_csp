@@ -68,6 +68,8 @@ class MapColoringCSP:
                         print(f"    Added ({x_k}, {x_i}) to queue.")
                         queue.append((x_k, x_i))
                 print("\n")
+
+        print(f"Arc consistency is guaranteed.")
         return True
 
     def _revise(self, x_i, x_j):
@@ -92,3 +94,52 @@ class MapColoringCSP:
             print("    No revision done.\n")
 
         return revised
+
+    def _is_valid(self, var, color, assignment):
+        """
+        Check if assigning 'color' to 'var' violates any constraints
+        with already-colored neighbors.
+        """
+        for neighbor in self._neighbors(var):
+            if neighbor in assignment and assignment[neighbor] == color:
+                return False
+        return True
+
+    def solve(self):
+        """
+        Solve the CSP using backtracking. Returns a dictionary where
+        keys are variables and values are assigned colors, or None if no
+        solution is found.
+
+        :return: valid variable assignment
+        """
+        assignment = {}
+
+        def backtrack():
+            # all variables assigned is solution
+            if len(assignment) == len(self.variables):
+                return True
+
+            # Pick an unassigned variable
+            var = None
+            for v in self.variables:
+                if v not in assignment:
+                    var = v
+                    break
+
+            # Try assigning each possible color from var's domain
+            for color in self.domains[var]:
+                if self._is_valid(var, color, assignment):
+                    assignment[var] = color
+                    # Recursively assign colors to the rest
+                    if backtrack():
+                        return True
+                    # If not successful, remove assignment and try next color
+                    del assignment[var]
+
+            return False
+
+        if backtrack():
+            return assignment
+        else:
+            return None
